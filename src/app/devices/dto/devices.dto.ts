@@ -8,9 +8,6 @@ import { ApiError } from '../schema/responses/api-error';
 
 export class DevicesDto {
   @IsString()
-  _id: string;
-
-  @IsString()
   @IsNotEmpty()
   name: string;
 

@@ -6,9 +6,11 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { DevicesService } from './devices.service';
 import { DevicesDto } from './dto/devices.dto';
+import { PaginationDto } from './dto/pagination.dto';
 
 @Controller('devices')
 export class DevicesController {
@@ -19,23 +21,26 @@ export class DevicesController {
     return this.devicesService.create(devicesDto);
   }
 
-  @Put()
-  update(@Body() devicesDto: DevicesDto): object {
-    return this.devicesService.update(devicesDto);
+  @Put(':id')
+  UpdateById(
+    @Param(':id') _id: number,
+    @Body() devicesDto: DevicesDto,
+  ): object {
+    return this.devicesService.update(_id, devicesDto);
   }
 
   @Get()
-  getAll(): object {
-    return this.devicesService.get();
+  GetAll(@Query() paginationDto: PaginationDto): object {
+    return this.devicesService.GetAll(paginationDto);
   }
 
   @Get(':id')
-  get(@Param(':id') _id: number): object {
-    return this.devicesService.get();
+  GetById(@Param(':id') _id: number): object {
+    return this.devicesService.GetById(_id);
   }
 
   @Delete(':id')
-  delete(@Param('id') _id: string): object {
-    return this.devicesService.delete(_id);
+  DeleteById(@Param('id') _id: string): object {
+    return this.devicesService.DeleteById(_id);
   }
 }

@@ -1,13 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DevicesDto } from './dto/devices.dto';
+import { PaginationDto } from './dto/pagination.dto';
 import { Devices, DevicesDoc, DevicesModel } from './schema/device.schema';
 
 @Injectable()
 export class DevicesService {
   constructor(@InjectModel(Devices.name) private devicesModel: DevicesModel) {}
-  async get(): Promise<object> {
-    return await this.devicesModel.find({});
+
+  async GetById(_id: number): Promise<object> {
+    return await this.devicesModel.findOne({ _id });
+  }
+
+  async GetAll(paginationDto: PaginationDto): Promise<object> {
+    const query = await this.devicesModel
+      .find()
+      .sort({ _id: 1 })
+      .limit(paginationDto.limit)
+      .skip(paginationDto.skip);
+
+    return query;
   }
 
   async create(devicesDto: DevicesDto): Promise<object> {
@@ -19,10 +31,8 @@ export class DevicesService {
     return await device.save();
   }
 
-  async update(devicesDto: DevicesDto): Promise<object> {
-    const device: DevicesDoc = await this.devicesModel.findOne({
-      _id: devicesDto?._id,
-    });
+  async update(_id: number, devicesDto: DevicesDto): Promise<object> {
+    const device: DevicesDoc = await this.devicesModel.findOne({ _id });
 
     if (device) {
       device.name = devicesDto.name;
@@ -37,7 +47,7 @@ export class DevicesService {
     return device;
   }
 
-  async delete(_id): Promise<object> {
+  async DeleteById(_id): Promise<object> {
     const device = await this.devicesModel.deleteOne({
       _id: _id,
     });
