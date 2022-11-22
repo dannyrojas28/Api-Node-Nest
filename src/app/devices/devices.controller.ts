@@ -4,8 +4,8 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 import { DevicesService } from './devices.service';
@@ -21,7 +21,7 @@ export class DevicesController {
     return this.devicesService.create(devicesDto);
   }
 
-  @Put(':id')
+  @Patch(':id')
   UpdateById(
     @Param(':id') _id: number,
     @Body() devicesDto: DevicesDto,
