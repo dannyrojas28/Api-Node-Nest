@@ -23,4 +23,9 @@ export class PaginationDto {
   @Type(() => String)
   @IsString()
   cpu?: string;
+
+  @IsOptional()
+  @Type(() => String)
+  @IsString()
+  query?: string;
 }

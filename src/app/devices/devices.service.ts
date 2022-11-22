@@ -8,16 +8,22 @@ import { Devices, DevicesDoc, DevicesModel } from './schema/device.schema';
 export class DevicesService {
   constructor(@InjectModel(Devices.name) private devicesModel: DevicesModel) {}
 
-  async GetById(_id: number): Promise<object> {
+  async GetById(_id: string): Promise<object> {
     return await this.devicesModel.findOne({ _id });
   }
 
-  async GetAll(paginationDto: PaginationDto): Promise<object> {
+  async GetAll(
+    queryParams: any,
+    paginationDto: PaginationDto,
+  ): Promise<Devices[]> {
+    delete queryParams?.skip;
+    delete queryParams?.limit;
     const query = await this.devicesModel
-      .find()
+      .find(queryParams)
       .sort({ _id: 1 })
       .limit(paginationDto.limit)
-      .skip(paginationDto.skip);
+      .skip(paginationDto.skip)
+      .setOptions({ sanitizeFilter: true });
 
     return query;
   }
@@ -31,7 +37,7 @@ export class DevicesService {
     return await device.save();
   }
 
-  async update(_id: number, devicesDto: DevicesDto): Promise<object> {
+  async update(_id: string, devicesDto: DevicesDto): Promise<object> {
     const device: DevicesDoc = await this.devicesModel.findOne({ _id });
 
     if (device) {

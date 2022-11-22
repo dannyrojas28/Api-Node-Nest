@@ -22,25 +22,22 @@ export class DevicesController {
   }
 
   @Patch(':id')
-  UpdateById(
-    @Param(':id') _id: number,
-    @Body() devicesDto: DevicesDto,
-  ): object {
+  update(@Param('id') _id: string, @Body() devicesDto: DevicesDto): object {
     return this.devicesService.update(_id, devicesDto);
   }
 
   @Get()
-  GetAll(@Query() paginationDto: PaginationDto): object {
-    return this.devicesService.GetAll(paginationDto);
+  findAll(@Query() query, @Query() paginationDto: PaginationDto): object {
+    return this.devicesService.GetAll(query, paginationDto);
   }
 
   @Get(':id')
-  GetById(@Param(':id') _id: number): object {
-    return this.devicesService.GetById(_id);
+  findOne(@Param('id') id: string): object {
+    return this.devicesService.GetById(id);
   }
 
   @Delete(':id')
-  DeleteById(@Param('id') _id: string): object {
+  remove(@Param('id') _id: string): object {
     return this.devicesService.DeleteById(_id);
   }
 }
