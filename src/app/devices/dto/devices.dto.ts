@@ -4,7 +4,7 @@ import {
   IsString,
   ValidationArguments,
 } from 'class-validator';
-import { ApiError } from '../schema/responses/api-error';
+import { ApiError } from '../../../shared/responses/api-error';
 
 export class DevicesDto {
   @IsString()
