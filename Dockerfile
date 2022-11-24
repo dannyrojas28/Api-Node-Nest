@@ -4,13 +4,13 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install glob rimraf
+RUN yarn add glob rimraf
 
-RUN npm install --only=development
+RUN yarn --only=development
 
 COPY . .
 
-RUN npm run build
+RUN yarn run build
 
 FROM node:12.19.0-alpine3.9 as production
 
