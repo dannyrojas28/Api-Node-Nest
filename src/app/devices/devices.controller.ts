@@ -40,18 +40,38 @@ export class DevicesController {
     @Query() query,
     @Query() paginationDto: PaginationDto,
   ): Promise<object> {
-    let data = await this.cache.get('getAll');
+    let key = '';
+
+    if (paginationDto?.limit) {
+      key += '_limit' + paginationDto?.limit;
+    }
+
+    if (paginationDto?.skip) {
+      key += '_skip' + paginationDto?.skip;
+    }
+
+    if (paginationDto?.name) {
+      key += '_' + paginationDto?.name;
+    }
+
+    if (paginationDto?.cpu) {
+      key += '_' + paginationDto?.cpu;
+    }
+
+    let data = await this.cache.get('getAll' + key);
     if (data) {
       return {
         data,
         FromRedis: 'this is loaded from redis cache',
       };
+    } else {
+      await this.cache.del('getAll');
     }
     console.log(data);
     if (!data) {
       data = await this.devicesService.GetAll(query, paginationDto);
       console.log(data);
-      await this.cache.set('getAll', data, 2000);
+      await this.cache.set('getAll' + key, data, 2000);
       return {
         data,
         FromRandomNumDbs: 'this is loaded from query',
