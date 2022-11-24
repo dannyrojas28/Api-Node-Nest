@@ -20,11 +20,9 @@ import { Cache } from 'cache-manager';
 @UseInterceptors(CacheInterceptor)
 @Controller('devices')
 export class DevicesController {
-  //This would be our dummy database since we won't be connecting to a database in the article
-  randomNumDbs = Math.floor(Math.random() * 10);
   constructor(
     private readonly devicesService: DevicesService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    @Inject(CACHE_MANAGER) private readonly cache: Cache,
   ) {}
 
   @Post()
@@ -42,20 +40,21 @@ export class DevicesController {
     @Query() query,
     @Query() paginationDto: PaginationDto,
   ): Promise<object> {
-    let data = await this.cacheManager.get('getAll');
+    let data = await this.cache.get('getAll');
     if (data) {
       return {
         data,
         FromRedis: 'this is loaded from redis cache',
       };
     }
-
+    console.log(data);
     if (!data) {
-      data = this.devicesService.GetAll(query, paginationDto);
-      await this.cacheManager.set('getAll', data);
+      data = await this.devicesService.GetAll(query, paginationDto);
+      console.log(data);
+      await this.cache.set('getAll', data, 2000);
       return {
         data,
-        FromRandomNumDbs: 'this is loaded from randomNumDbs',
+        FromRandomNumDbs: 'this is loaded from query',
       };
     }
   }

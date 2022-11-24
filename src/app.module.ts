@@ -1,4 +1,4 @@
-import { Module, CacheModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DevicesModule } from './app/devices/devices.module';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -14,12 +14,6 @@ import { MongooseModule } from '@nestjs/mongoose';
         process.env.DB_PASSWORD + '@' + process.env.DB_HOST + process.env.DB
       }`,
     ),
-    CacheModule.register({
-      store: 'redisStore',
-      host: 'localhost', //default host
-      port: 6379,
-      ttl: 2000, //ttl
-    }),
     DevicesModule,
   ],
   controllers: [],
