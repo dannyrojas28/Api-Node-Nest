@@ -35,13 +35,18 @@ export class DevicesController {
     return this.devicesService.update(_id, devicesDto);
   }
 
+  @Post('updateprice')
+  getorupdate(@Body() { price, name }): object {
+    return this.devicesService.updatePrice(price, name);
+  }
+
   @Get()
   async findAll(
     @Query() query,
     @Query() paginationDto: PaginationDto,
   ): Promise<object> {
     let key = '';
-
+    console.log(paginationDto?.limit);
     if (paginationDto?.limit) {
       key += '_limit' + paginationDto?.limit;
     }
@@ -57,7 +62,7 @@ export class DevicesController {
     if (paginationDto?.cpu) {
       key += '_' + paginationDto?.cpu;
     }
-
+    console.log(key);
     let data = await this.cache.get('getAll' + key);
     if (data) {
       return {
@@ -67,10 +72,8 @@ export class DevicesController {
     } else {
       await this.cache.del('getAll');
     }
-    console.log(data);
     if (!data) {
       data = await this.devicesService.GetAll(query, paginationDto);
-      console.log(data);
       await this.cache.set('getAll' + key, data, 2000);
       return {
         data,
